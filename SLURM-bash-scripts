@@ -14,10 +14,10 @@ module avail bowtie2
 # Bash script to run on cluster
 #!/bin/sh
 module load bowtie2/2.4.4 
-bowtie2 -x GRCz11 -q -1 R1.fastq -2 R2.fastq -S bowtie2_alignment.sam
+bowtie2 -x <reference> -q -1 R1.fastq -2 R2.fastq -S <filename>.sam
 
 # Change bash file to unix 
-dos2unix bowtie2_hst_wgs.sh
+dos2unix <filename>.sh
 
 # Run bash script
 sbatch <filename>.sh
