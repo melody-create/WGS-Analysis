@@ -1,0 +1,4 @@
+# Unzip .tar or .gz file
+tar -xvf [filename].tar
+gzip -dk [filename].gz
+
