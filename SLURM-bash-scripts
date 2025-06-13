@@ -5,7 +5,7 @@ gzip -dk <filename>.gz
 # Quality control with FastQC  
 module load fastqc
 fastqc <filename>
-# Output files: fastqc.out, fastqc.html, and fastqc.zip.
+# Output files: fastqc.out, fastqc.html, and fastqc.zip
 
 # Run Bowtie2 on the Cluster
 # Check available versions
