@@ -1,4 +1,59 @@
 # Unzip .tar or .gz file
-tar -xvf [filename].tar
-gzip -dk [filename].gz
+tar -xvf <filename>.tar
+gzip -dk <filename>.gz
 
+# Quality control with FastQC  
+module load fastqc
+fastqc <filename>
+# Output files: fastqc.out, fastqc.html, and fastqc.zip.
+
+# Run Bowtie2 on the Cluster
+# Check available versions
+module avail bowtie2
+
+# Bash script to run on cluster
+#!/bin/sh
+module load bowtie2/2.4.4 
+bowtie2 -x GRCz11 -q -1 R1.fastq -2 R2.fastq -S bowtie2_alignment.sam
+
+# Change bash file to unix 
+dos2unix bowtie2_hst_wgs.sh
+
+# Run bash script
+sbatch <filename>.sh
+
+# Check job status 
+squeue
+
+# Check job output
+cat <filename>.out
+
+# Convert SAM file to BAM file
+module load samtools/1.13
+samtools view -S -b <filename>.sam > <filename>.bam
+
+# Sort BAM file
+samtools sort <filename>.bam -o <filename>-sorted.bam
+
+# Index BAM file and genome reference file RefSeq GCF_000002035.6
+samtools index <filename>.bam <filename>.bai
+samtools faidx <reference_filename>.fasta
+
+# View BAM file stats
+samtools stats <filename>.bam > <filename>.stats
+samtools coverage <filename>.bam
+
+# Generate BCF/VCF format
+bcftools mpileup -f <reference_filename>.fasta <filename>.bam <filename>.bam > <filename>.bcf
+bcftools call -vmO z -o <filename>.vcf.gz <filename>.bcf
+
+# Filter by quality score
+bcftools filter -O z -o <filename>-filtered.vcf.gz -i'%QUAL>20' <filename>.vcf.gz
+
+
+# Extract variant allele frequency: DP, DP4, and MQ plot mapping quality 
+#!/bin/sh
+module load bcftools/1.13
+bcftools query -f '%CHROM\t%POS\t%INFO/DP\t%INFO/AC\t%INFO/AN\t%INFO/DP4\t%INFO/MQ\n' <filename>.vcf.gz > <filename>-query.txt
+
+# Use Ensembl Variant Effect Predictor (VEP) https://useast.ensembl.org/info/docs/tools/vep/index.html
