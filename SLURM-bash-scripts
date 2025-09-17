@@ -3,7 +3,7 @@ tar -xvf <filename>.tar
 gzip -dk <filename>.gz
 
 # Quality control with FastQC  
-module load fastqc
+module load fastqc/0.11.9
 fastqc <filename>
 # Output files: fastqc.out, fastqc.html, and fastqc.zip
 
